@@ -213,6 +213,7 @@ fn execute_wasm(options: &Run) -> Result<(), String> {
         .instantiate(&import_object)
         .map_err(|e| format!("Can't instantiate module: {:?}", e))?;
 
+    let tick = std::time::Instant::now();
     webassembly::run_instance(
         &module,
         &mut instance,
@@ -220,6 +221,8 @@ fn execute_wasm(options: &Run) -> Result<(), String> {
         options.args.iter().map(|arg| arg.as_str()).collect(),
     )
     .map_err(|e| format!("{:?}", e))?;
+    let tock = std::time::Instant::now();
+    println!("{:?}", tock.duration_since(tick).as_millis());
 
     Ok(())
 }
